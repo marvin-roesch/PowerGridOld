@@ -11,5 +11,6 @@ package de.paleocrafter.powergrid;
  *
  */
 public class PowerGrid {
-    
+    public static String UNIT_NAME;
+    public static String PACKET_CHANNEL;
 }
