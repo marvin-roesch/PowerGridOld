@@ -4,28 +4,35 @@ import java.util.logging.Logger;
 
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteStreams;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import cpw.mods.fml.common.network.IPacketHandler;
+import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.Player;
 import cpw.mods.fml.relauncher.Side;
-import de.paleocrafter.powergrid.network.packet.PowerGridPacket;
-import de.paleocrafter.powergrid.network.packet.PowerGridPacket.ProtocolException;
+import de.paleocrafter.powergrid.network.packet.PaleoPacket;
+import de.paleocrafter.powergrid.network.packet.PaleoPacket.ProtocolException;
 
 /**
  * 
- * PowerGrid
+ * PaleoMachineFramework
  * 
- * PowerGridPacketHandler
+ * PaleoPacketHandler
  * 
  * @author PaleoCrafter
  * @license Lesser GNU Public License v3 (http://www.gnu.org/licenses/lgpl.html)
  * 
  */
-public class PowerGridPacketHandler implements IPacketHandler {
+public class PaleoPacketHandler implements IPacketHandler {
+
+    public static String CHANNEL_NAME = "PowerGrid";
+
+    public static void registerChannel() {
+        NetworkRegistry.instance().registerChannel(new PaleoPacketHandler(),
+                CHANNEL_NAME);
+    }
 
     @Override
     public void onPacketData(INetworkManager manager,
@@ -34,10 +41,9 @@ public class PowerGridPacketHandler implements IPacketHandler {
             EntityPlayer entityPlayer = (EntityPlayer) player;
             ByteArrayDataInput in = ByteStreams.newDataInput(packet.data);
             int packetId = in.readUnsignedByte();
-            PowerGridPacket pgPacket = PowerGridPacket
-                    .constructPacket(packetId);
-            pgPacket.read(in);
-            pgPacket.execute(entityPlayer,
+            PaleoPacket paleoPacket = PaleoPacket.constructPacket(packetId);
+            paleoPacket.read(in);
+            paleoPacket.execute(entityPlayer,
                     entityPlayer.worldObj.isRemote ? Side.CLIENT : Side.SERVER);
         } catch (ProtocolException e) {
             if (player instanceof EntityPlayerMP) {

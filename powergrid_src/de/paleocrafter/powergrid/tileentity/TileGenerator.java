@@ -6,8 +6,8 @@ import java.util.List;
 
 import de.paleocrafter.powergrid.energy.IGenerator;
 import de.paleocrafter.powergrid.energy.ITransporter;
+import de.paleocrafter.powergrid.network.data.TileData;
 import de.paleocrafter.powergrid.util.CableHelper;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 
 /**
@@ -20,8 +20,9 @@ import net.minecraftforge.common.ForgeDirection;
  * @license Lesser GNU Public License v3 (http://www.gnu.org/licenses/lgpl.html)
  * 
  */
-public class TileGenerator extends TileEntity implements IGenerator {
+public class TileGenerator extends TilePowerGrid implements IGenerator {
 
+    @TileData
     private int internalStorage;
     private int maximumStorage;
     private int packetSize;

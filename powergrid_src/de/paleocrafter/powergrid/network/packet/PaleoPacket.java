@@ -11,31 +11,33 @@ import com.google.common.io.ByteStreams;
 
 import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.relauncher.Side;
-import de.paleocrafter.powergrid.PowerGrid;
+import de.paleocrafter.powergrid.network.PaleoPacketHandler;
 
 /**
- * 
- * PowerGrid
- * 
- * PowerGridPacket
- * 
+ *
+ * PaleoMachineFramework
+ *
+ * PaleoPacket
+ *
  * @author PaleoCrafter
  * @license Lesser GNU Public License v3 (http://www.gnu.org/licenses/lgpl.html)
- * 
+ *
  */
-public abstract class PowerGridPacket {
-    private static final BiMap<Integer, Class<? extends PowerGridPacket>> idMap;
+public abstract class PaleoPacket {
+    private static final BiMap<Integer, Class<? extends PaleoPacket>> idMap;
 
     static {
-        ImmutableBiMap.Builder<Integer, Class<? extends PowerGridPacket>> builder = ImmutableBiMap
+        ImmutableBiMap.Builder<Integer, Class<? extends PaleoPacket>> builder = ImmutableBiMap
                 .builder();
-
+        
+        builder.put(Integer.valueOf(0), TileDataPacket.class);
+        
         idMap = builder.build();
     }
 
-    public static PowerGridPacket constructPacket(int packetId)
+    public static PaleoPacket constructPacket(int packetId)
             throws ProtocolException, ReflectiveOperationException {
-        Class<? extends PowerGridPacket> clazz = idMap.get(Integer
+        Class<? extends PaleoPacket> clazz = idMap.get(Integer
                 .valueOf(packetId));
         if (clazz == null) {
             throw new ProtocolException("Unknown Packet Id!");
@@ -73,11 +75,11 @@ public abstract class PowerGridPacket {
     }
 
     public final Packet makePacket() throws IllegalArgumentException {
-        if (PowerGrid.PACKET_CHANNEL != null) {
+        if (PaleoPacketHandler.CHANNEL_NAME != null) {
             ByteArrayDataOutput out = ByteStreams.newDataOutput();
             out.writeByte(getPacketId());
             write(out);
-            return PacketDispatcher.getPacket(PowerGrid.PACKET_CHANNEL,
+            return PacketDispatcher.getPacket(PaleoPacketHandler.CHANNEL_NAME,
                     out.toByteArray());
         }
         throw new IllegalArgumentException(
@@ -90,3 +92,4 @@ public abstract class PowerGridPacket {
 
     public abstract void execute(EntityPlayer player, Side side);
 }
+
